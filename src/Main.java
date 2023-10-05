@@ -1,7 +1,5 @@
-package hepl.be;
-
-import hepl.be.controller.MainWindowController;
-import hepl.be.view.window.WindowClient;
+import controller.MainWindowController;
+import view.window.WindowClient;
 
 public class Main {
     public static void main(String[] args) {

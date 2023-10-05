@@ -1,4 +1,4 @@
-package hepl.be.VESPAP;
+package VESPAP;
 
 public class ReponsePayFacture implements Reponse
 {

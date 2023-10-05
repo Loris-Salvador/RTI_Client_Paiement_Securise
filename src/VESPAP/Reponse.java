@@ -1,4 +1,4 @@
-package hepl.be.VESPAP;
+package VESPAP;
 
-import java.io.*;
+import java.io.Serializable;
 public interface Reponse extends Serializable { }

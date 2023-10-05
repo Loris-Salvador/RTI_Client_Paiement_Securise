@@ -1,17 +1,20 @@
-package hepl.be.VESPAP;
+package VESPAP;
 
-import hepl.be.model.Facture;
+import model.Facture;
 
 import java.util.ArrayList;
 
 public class ReponseGetFactures implements Reponse
 {
+    private String message;
     private ArrayList<Facture> tableauFactures;
 
-    public ReponseGetFactures(ArrayList<Facture> tabFactures)
+    public ReponseGetFactures(ArrayList<Facture> tabFactures, String m)
     {
         tableauFactures = tabFactures;
+        message = m;
     }
+
 
     public ArrayList<Facture> getTableauFactures() {
         return tableauFactures;

@@ -1,11 +1,13 @@
-package hepl.be.view.window;
+package view.dialog;
+
+import controller.CustomDialogController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CustomDialog extends JDialog implements ActionListener {
+public class CustomDialog extends JDialog {
     private JPanel panel;
     private JLabel label_1;
     private JLabel label_2;
@@ -13,8 +15,6 @@ public class CustomDialog extends JDialog implements ActionListener {
     private JTextField CardNumberField;
     private JButton confirmButton;
     private JButton cancelButton;
-    private String username;
-    private String cardnumber;
 
     public CustomDialog(JFrame parent, String title) {
         super(parent, title, true);
@@ -50,31 +50,22 @@ public class CustomDialog extends JDialog implements ActionListener {
         panel.add(cancelButton);
         add(panel);
 
-        confirmButton.addActionListener(this);
-        cancelButton.addActionListener(this);
-
         setSize(400, 160);
         setResizable(false);
         setLocationRelativeTo(parent);
     }
 
     public String getUserName() {
-        return username;
+        return UserNameField.getText();
     }
-
     public int getCardNumber() {
-        return Integer.parseInt(cardnumber);
+        return Integer.parseInt(CardNumberField.getText());
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == confirmButton) {
-            username = UserNameField.getText();
-            cardnumber = CardNumberField.getText();
-        } else if (e.getSource() == cancelButton) {
-            username = null;
-            cardnumber = null;
-            setVisible(false);
-        }
+    public void setController(CustomDialogController controller)
+    {
+        cancelButton.addActionListener(controller);
+        confirmButton.addActionListener(controller);
     }
+
 }

@@ -1,4 +1,4 @@
-package hepl.be.VESPAP;
+package VESPAP;
 
 public class RequetePayFacture implements Requete
 {

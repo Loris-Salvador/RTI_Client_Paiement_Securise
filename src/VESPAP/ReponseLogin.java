@@ -1,4 +1,4 @@
-package hepl.be.VESPAP;
+package VESPAP;
 
 public class ReponseLogin implements Reponse
 {
@@ -13,13 +13,13 @@ public class ReponseLogin implements Reponse
         this.message = message;
     }
 
-    ReponseLogin()
+    public ReponseLogin()
     {
         valide = false;
         message = "";
     }
 
-    ReponseLogin(boolean v, String m) {
+    public ReponseLogin(boolean v, String m) {
         valide = v;
         message = m;
     }

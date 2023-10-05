@@ -1,8 +1,7 @@
-package hepl.be.view.window;
+package view.window;
 
-import hepl.be.controller.MainWindowController;
+import controller.MainWindowController;
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -91,6 +90,7 @@ public class WindowClient extends JFrame {
         lineEditNumClient.setFont(new Font("DejaVu Sans", Font.PLAIN, 12));
         lineEditNumClient.setHorizontalAlignment(JTextField.CENTER);
         lineEditNumClient.setBounds(120, 60, 100, 25);
+        lineEditNumClient.setEnabled(false);
 
 
         pushButtonPayer = new JButton("Payer");
@@ -226,6 +226,7 @@ public class WindowClient extends JFrame {
         lineEditNom.setEnabled(false);
         lineEditMotDePasse.setEnabled(false);
         checkBoxNouveauClient.setEnabled(false);
+        lineEditNumClient.setEnabled(true);
 
         pushButtonPayer.setEnabled(true);
         tableWidgetFacture.setEnabled(true);
@@ -244,6 +245,7 @@ public class WindowClient extends JFrame {
         pushButtonPayer.setEnabled(false);
         tableWidgetFacture.setEnabled(false);
         tableWidgetArticle.setEnabled(false);
+        lineEditNumClient.setEnabled(false);
 
 
         setMotDePasse("");

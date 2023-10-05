@@ -1,46 +1,40 @@
-package hepl.be.controller;
+package controller;
 
 
-import hepl.be.VESPAP.*;
-import hepl.be.model.Facture;
-import hepl.be.view.window.CustomDialog;
-import hepl.be.view.window.WindowClient;
+import VESPAP.*;
+import model.Facture;
+import view.dialog.CustomDialog;
+import view.window.WindowClient;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import java.awt.event.MouseListener;
 
 
 public class MainWindowController implements ActionListener, MouseListener {
 
     private WindowClient mainWindow;
     private Socket socket;
-
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-
     private int CurrentIdArticle = 0;
 
     public MainWindowController(WindowClient mainWindow)
     {
         this.mainWindow = mainWindow;
-        mainWindow.setPublicite("Loris le BOT");
-
+        mainWindow.setPublicite("Ca y est");
         oos = null;
         ois = null;
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton)
@@ -63,6 +57,8 @@ public class MainWindowController implements ActionListener, MouseListener {
         else if (e.getSource() instanceof JTextField) {
             JTextField source = (JTextField) e.getSource();
 
+            System.out.println("TextField");
+
             if(source.getToolTipText().equals("NumClient"))
             {
                 GetFactures();
@@ -72,9 +68,34 @@ public class MainWindowController implements ActionListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
+        System.out.println("Mouse Clicked");
         JTable source = (JTable) e.getSource();
         if (source.getToolTipText().equals("Facture"))
         {
+            int idFacture = (int) source.getValueAt(source.getSelectedRow(), 0);
+
+            RequeteGetArticles requete = new RequeteGetArticles(idFacture);
+
+            try {
+                oos.writeObject(requete);
+                ReponseGetArticles reponse = (ReponseGetArticles) ois.readObject();
+
+                mainWindow.videTableArticle();
+
+                while(reponse.getArticles().size() > 0)
+                {
+                    mainWindow.ajouteArticleTable(reponse.getArticles().get(0).getIntitule(), reponse.getArticles().get(0).getPrixUnitaire(), reponse.getArticles().get(0).getQuantite());
+                    reponse.getArticles().remove(0);
+                }
+
+            }
+            catch (IOException | ClassNotFoundException ex)
+            {
+                mainWindow.dialogueErreur("Erreur", "Erreur IO object requete Article" + ex.getMessage());
+            }
+
+
+
 
         }
     }
@@ -83,7 +104,7 @@ public class MainWindowController implements ActionListener, MouseListener {
     {
         Properties prop = new Properties();
 
-        try (FileInputStream fis = new FileInputStream("src/main/resources/properties.properties")) {
+        try (FileInputStream fis = new FileInputStream("properties.properties")) {
             prop.load(fis);
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,17 +119,11 @@ public class MainWindowController implements ActionListener, MouseListener {
         try
         {
             socket = new Socket(ipServeur,portServeur);
-            System.out.println("yo1");
             RequeteLogin requete = new RequeteLogin(login,password,isNew);
-            System.out.println("yo2");
             oos = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("yo3");
             ois = new ObjectInputStream(socket.getInputStream());
-            System.out.println("yo4");
             oos.writeObject(requete);
-            System.out.println("yo5");
             ReponseLogin reponse = (ReponseLogin) ois.readObject();
-            System.out.println("yo6");
             if (reponse.isValide())
             {
                 mainWindow.LoginOK();
@@ -121,7 +136,7 @@ public class MainWindowController implements ActionListener, MouseListener {
         }
         catch (IOException | ClassNotFoundException ex)
         {
-            mainWindow.dialogueErreur("LOGIN", "Problème de connexion");
+            mainWindow.dialogueErreur("LOGIN", "Problème de connexio" + ex.getMessage());
         }
 
     }
@@ -150,6 +165,8 @@ public class MainWindowController implements ActionListener, MouseListener {
         try
         {
             CustomDialog Dialog = new CustomDialog(mainWindow, "Payer");
+            CustomDialogController controller = new CustomDialogController(Dialog);
+            Dialog.setController(controller);
             Dialog.setVisible(true);
 
             RequetePayFacture requete = new RequetePayFacture(mainWindow.getIndiceFactureSelectionne(), Dialog.getUserName(), Dialog.getCardNumber());
@@ -160,6 +177,7 @@ public class MainWindowController implements ActionListener, MouseListener {
             {
                 mainWindow.dialogueMessage("PAYER", reponse.getMessage());
                 GetFactures(); //Refresh de la table
+                mainWindow.videTableArticle();
             }
             else
             {
@@ -188,7 +206,7 @@ public class MainWindowController implements ActionListener, MouseListener {
         }
         catch (IOException | ClassNotFoundException ex)
         {
-            mainWindow.dialogueErreur("LOGOUT", "Problème de connexion");
+            mainWindow.dialogueErreur("Erreur", "Problème de connexion" + ex.getMessage());
         }
     }
 
