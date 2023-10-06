@@ -68,4 +68,12 @@ public class CustomDialog extends JDialog {
         confirmButton.addActionListener(controller);
     }
 
+    public void dialogueMessage(String titre, String message) {
+        JOptionPane.showMessageDialog(null, message, titre, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void dialogueErreur(String titre, String message) {
+        JOptionPane.showMessageDialog(null, message, titre, JOptionPane.ERROR_MESSAGE);
+    }
+
 }

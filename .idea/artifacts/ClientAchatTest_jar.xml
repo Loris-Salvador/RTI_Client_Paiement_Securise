@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ClientAchatTest:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ClientAchatTest_jar</output-path>
+    <root id="archive" name="ClientAchatTest.jar">
+      <element id="module-output" name="ClientAchatTest" />
+    </root>
+  </artifact>
+</component>

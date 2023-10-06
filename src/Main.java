@@ -6,5 +6,7 @@ public class Main {
         WindowClient mainWindow = new WindowClient();
         MainWindowController mainWindowController = new MainWindowController(mainWindow);
         mainWindow.setController(mainWindowController);
+
+
     }
 }

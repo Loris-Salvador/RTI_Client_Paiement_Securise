@@ -104,21 +104,21 @@ public class MainWindowController implements ActionListener, MouseListener {
     {
         Properties prop = new Properties();
 
-        try (FileInputStream fis = new FileInputStream("properties.properties")) {
-            prop.load(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try (FileInputStream fis = new FileInputStream("properties.properties")) {
+//            prop.load(fis);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        String ipServeur = prop.getProperty("Serveur");
-        int portServeur = Integer.parseInt(prop.getProperty("Port"));
+//        String ipServeur = prop.getProperty("Serveur");
+//        int portServeur = Integer.parseInt(prop.getProperty("Port"));
         String login = mainWindow.getNom();
         String password = mainWindow.getMotDePasse();
         boolean isNew = mainWindow.isNouveauEmployeChecked();
 
         try
         {
-            socket = new Socket(ipServeur,portServeur);
+            socket = new Socket("localhost",6666);
             RequeteLogin requete = new RequeteLogin(login,password,isNew);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
@@ -162,32 +162,14 @@ public class MainWindowController implements ActionListener, MouseListener {
 
     private void Payer()
     {
-        try
-        {
-            CustomDialog Dialog = new CustomDialog(mainWindow, "Payer");
-            CustomDialogController controller = new CustomDialogController(Dialog);
-            Dialog.setController(controller);
-            Dialog.setVisible(true);
 
-            RequetePayFacture requete = new RequetePayFacture(mainWindow.getIndiceFactureSelectionne(), Dialog.getUserName(), Dialog.getCardNumber());
-            oos.writeObject(requete);
-            ReponsePayFacture reponse = (ReponsePayFacture) ois.readObject();
+        CustomDialog Dialog = new CustomDialog(mainWindow, "Payer");
+        CustomDialogController controller = new CustomDialogController(Dialog, this.socket, this.oos, this.ois, mainWindow.getIndiceFactureSelectionne());
+        Dialog.setController(controller);
+        Dialog.setVisible(true);
 
-            if(reponse.isValide())
-            {
-                mainWindow.dialogueMessage("PAYER", reponse.getMessage());
-                GetFactures(); //Refresh de la table
-                mainWindow.videTableArticle();
-            }
-            else
-            {
-                mainWindow.dialogueErreur("PAYER", reponse.getMessage());
-            }
-        }
-        catch (IOException | ClassNotFoundException ex)
-        {
-            mainWindow.dialogueErreur("LOGOUT", "Problème de connexion");
-        }
+        GetFactures();
+        mainWindow.videTableArticle();
     }
 
     private void GetFactures()
