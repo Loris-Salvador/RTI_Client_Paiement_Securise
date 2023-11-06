@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ClientAchatTest.iml" filepath="$PROJECT_DIR$/ClientAchatTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RTI_Client_Paiement_Securisé.iml" filepath="$PROJECT_DIR$/RTI_Client_Paiement_Securisé.iml" />
     </modules>
   </component>
 </project>

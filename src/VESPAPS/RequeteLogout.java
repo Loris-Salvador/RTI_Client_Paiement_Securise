@@ -1,7 +1,9 @@
-package VESPAP;
+package VESPAPS;
 
-public class RequeteLogout implements Requete
-{
+
+import communication.Requete;
+
+public class RequeteLogout implements Requete {
     private String login;
 
     public RequeteLogout(String l) {

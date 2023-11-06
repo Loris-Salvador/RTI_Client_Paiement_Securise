@@ -1,34 +1,40 @@
 package controller;
 
-import VESPAP.ReponsePayFacture;
-import VESPAP.RequetePayFacture;
+import VESPAPS.ReponsePayFacture;
+import VESPAPS.RequetePayFacture;
 import view.dialog.CustomDialog;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 public class CustomDialogController implements ActionListener {
 
     private CustomDialog dialog;
-    private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private String username;
     private int cardnumber;
     private int idFacture;
+    private SecretKey cleSession;
 
-    public CustomDialogController(CustomDialog dialog, Socket socket, ObjectOutputStream oos, ObjectInputStream ois, int idFacture )
+    public CustomDialogController(CustomDialog dialog, ObjectOutputStream oos, ObjectInputStream ois, int idFacture, SecretKey cleSession)
     {
-        this.socket = socket;
         this.dialog = dialog;
         this.oos = oos;
         this.ois = ois;
         this.idFacture = idFacture;
+        this.cleSession = cleSession;
     }
 
 
@@ -43,12 +49,16 @@ public class CustomDialogController implements ActionListener {
             username = dialog.getUserName();
             cardnumber = dialog.getCardNumber();
 
+            System.out.println("Card nulber : " + cardnumber);
+
             try {
 
-                RequetePayFacture requete = new RequetePayFacture(idFacture, username, cardnumber);
+                RequetePayFacture requete = new RequetePayFacture(idFacture, username, cardnumber, cleSession);
                 oos.writeObject(requete);
                 ReponsePayFacture reponse = (ReponsePayFacture) ois.readObject();
 
+                if(!reponse.VerifyAuthenticity(cleSession))
+                    dialog.dialogueErreur("PAYER", "Error VerifyAuthenticity()");
                 if (reponse.isValide()) {
                     dialog.dialogueMessage("PAYER", reponse.getMessage());
                     dialog.setVisible(false);
@@ -57,7 +67,8 @@ public class CustomDialogController implements ActionListener {
                     dialog.dialogueErreur("PAYER", reponse.getMessage());
                 }
             }
-            catch (IOException | ClassNotFoundException ex)
+            catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException |
+                   NoSuchAlgorithmException | BadPaddingException | NoSuchProviderException | InvalidKeyException ex)
             {
                 System.out.println(ex.getMessage());
             }
