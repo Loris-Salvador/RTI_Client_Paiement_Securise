@@ -12,7 +12,7 @@ public class Main {
 
         int i=0;
 
-        while(i<4) {
+        while(i<3) {
 
             WindowClient mainWindow = new WindowClient();
             MainWindowController mainWindowController = null;
@@ -31,7 +31,7 @@ public class Main {
             }
             mainWindow.setController(mainWindowController);
             i++;
-        }
+       }
 
 
     }
